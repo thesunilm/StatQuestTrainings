@@ -60,3 +60,39 @@ roc.df[roc.df$tpp > 60 & roc.df$tpp <80,]
 roc(obese, glm.fit$fitted.values, plot = TRUE, legacy.axes=TRUE, percent=TRUE,
     xlab="False Positive Percentage", ylab="True Positive Percentage",
     col="#377eb8", lwd=4, print.auc=TRUE)
+
+
+
+# To draw and calculate partial AUC
+# There are useful when you want to focus on the part of the ROC curve
+# that only allows for a small number of False positivies. 
+
+roc(obese, glm.fit$fitted.values, plot=TRUE, legacy.axes= TRUE, percent=TRUE,
+    xlab="False Positive Percentage", ylab="True Positive Percentage",
+    col="#377eb8", lwd=4, print.auc=TRUE, print.auc.x=45, partial.auc=c(100,90),
+    auc.polygon = TRUE, auc.polygon.col = "#377eb822")
+
+
+### Overlapping two ROC curves
+### Create a model
+
+rf.model <- randomForest(factor(obese) ~ weight)
+
+
+#curve with logistic regression
+
+roc(obese, glm.fit$fitted.values, plot=TRUE, legacy.axes= TRUE, percent=TRUE,
+    xlab="False Positive Percentage", ylab="True Positive Percentage",
+    col="#377eb8", lwd=4, print.auc=TRUE)
+
+# plot curve with random forest & compine
+
+plot.roc(obese, rf.model$votes[,1], percent=TRUE, col="#4daf4a", lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=40)
+
+# Adding legends to the plot
+legend("bottomright", legend=c("Logistic Regression", "Random Forest"),
+       col=c("#377eb8", "#4daf4a"), lwd=4)
+
+#reset the parameter pty graphical parameter back to its default value m which
+# is short of maximum
+par(pty ='m')
